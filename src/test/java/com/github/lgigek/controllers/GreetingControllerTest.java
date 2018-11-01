@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -26,6 +27,23 @@ public class GreetingControllerTest {
     public void a() throws Exception {
 
         mockmvc.perform(get("/greeting")).andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("It should return \"Hello, World!\" if there is no 'value'")
+    public void b() throws Exception {
+
+        mockmvc.perform(get("/greeting")).
+                andExpect(jsonPath("$.content", "Hello, World!").exists());
+    }
+
+    @Test
+    @DisplayName("It should return \"Hello, Lucas!\" if value is Lucas")
+    public void c() throws Exception {
+
+        mockmvc.perform(get("/greeting")
+                .param("value", "Lucas"))
+                .andExpect(jsonPath("$.content", "Hello, Lucas!").exists());
     }
 
 }
